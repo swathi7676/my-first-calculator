@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Calculator</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      display: flex;
+      justify-content: center;
+      padding-top: 60px;
+    }
+
+    .calculator {
+      width: 280px;
+      padding: 18px;
+      background: #222b3a;
+      border-radius: 14px;
+    }
+
+    #display {
+      background: white;
+      padding: 18px 10px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      text-align: right;
+      font-size: 30px;
+      min-height: 36px;
+      overflow: hidden;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    button {
+      padding: 16px 8px;
+      border: 0;
+      border-radius: 8px;
+      background: #d9e1ec;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #ffffff;
+    }
+
+    .operator {
+      background: #76a9fa;
+    }
+
+    .clear {
+      background: #f28b82;
+    }
+
+    .equals {
+      background: #81c995;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="calculator">
+    <div id="display">0</div>
+
+    <div class="buttons">
+      <button class="clear" onclick="clearCalculator()">C</button>
+      <button onclick="deleteLast()">⌫</button>
+      <button class="operator" onclick="chooseOperator('/')">÷</button>
+      <button class="operator" onclick="chooseOperator('*')">×</button>
+
+      <button onclick="addNumber('7')">7</button>
+      <button onclick="addNumber('8')">8</button>
+      <button onclick="addNumber('9')">9</button>
+      <button class="operator" onclick="chooseOperator('-')">−</button>
+
+      <button onclick="addNumber('4')">4</button>
+      <button onclick="addNumber('5')">5</button>
+      <button onclick="addNumber('6')">6</button>
+      <button class="operator" onclick="chooseOperator('+')">+</button>
+
+      <button onclick="addNumber('1')">1</button>
+      <button onclick="addNumber('2')">2</button>
+      <button onclick="addNumber('3')">3</button>
+      <button class="equals" onclick="calculate()">=</button>
+
+      <button onclick="addNumber('0')">0</button>
+      <button onclick="addDecimal()">.</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById("display");
+
+    let firstNumber = null;
+    let operator = null;
+    let startNewNumber = false;
+
+    function addNumber(number) {
+      if (display.textContent === "0" || startNewNumber) {
+        display.textContent = number;
+        startNewNumber = false;
+      } else {
+        display.textContent += number;
+      }
+    }
+
+    function addDecimal() {
+      if (startNewNumber) {
+        display.textContent = "0.";
+        startNewNumber = false;
+      } else if (!display.textContent.includes(".")) {
+        display.textContent += ".";
+      }
+    }
+
+    function chooseOperator(chosenOperator) {
+      firstNumber = Number(display.textContent);
+      operator = chosenOperator;
+      startNewNumber = true;
+    }
+
+    function calculate() {
+      if (operator === null) {
+        return;
+      }
+
+      const secondNumber = Number(display.textContent);
+      let answer;
+
+      if (operator === "+") {
+        answer = firstNumber + secondNumber;
+      } else if (operator === "-") {
+        answer = firstNumber - secondNumber;
+      } else if (operator === "*") {
+        answer = firstNumber * secondNumber;
+      } else if (operator === "/") {
+        if (secondNumber === 0) {
+          display.textContent = "Cannot divide by zero";
+          operator = null;
+          startNewNumber = true;
+          return;
+        }
+        answer = firstNumber / secondNumber;
+      }
+
+      display.textContent = String(answer);
+      operator = null;
+      startNewNumber = true;
+    }
+
+    function clearCalculator() {
+      display.textContent = "0";
+      firstNumber = null;
+      operator = null;
+      startNewNumber = false;
+    }
+
+    function deleteLast() {
+      if (!startNewNumber) {
+        display.textContent = display.textContent.slice(0, -1) || "0";
+      }
+    }
+  </script>
+</body>
+</html>
